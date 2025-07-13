@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from braincog.base.node import LIFNode
+from .probabilistic_neuron import ProbabilisticLIFActivation
 
 
 def nonlinearity_snn(x, nonliner_func):
@@ -50,9 +50,9 @@ class ResnetBlockSnn(nn.Module):
                                                     kernel_size=1,
                                                     stride=1,
                                                     padding=0)
-        self.lif1 = LIFNode()
-        self.lif2 = LIFNode()
-        self.lif3 = LIFNode()
+        self.lif1 = ProbabilisticLIFActivation()
+        self.lif2 = ProbabilisticLIFActivation()
+        self.lif3 = ProbabilisticLIFActivation()
 
     def forward(self, x, temb):
         h = x
@@ -103,8 +103,8 @@ class AttnBlockSnn(nn.Module):
                                         kernel_size=1,
                                         stride=1,
                                         padding=0)
-        self.q_lif = LIFNode()
-        self.k_lif = LIFNode()
+        self.q_lif = ProbabilisticLIFActivation()
+        self.k_lif = ProbabilisticLIFActivation()
 
     def forward(self, x):
         h_ = x

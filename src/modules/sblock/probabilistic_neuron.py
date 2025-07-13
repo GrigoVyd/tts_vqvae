@@ -96,3 +96,56 @@ class ProbabilisticSpikeNeuron(nn.Module):
             V (float or torch.Tensor): New membrane potential value
         """
         self.V = torch.tensor(V) if not isinstance(V, torch.Tensor) else V
+
+
+class ProbabilisticLIFActivation(nn.Module):
+    """
+    A wrapper class that makes ProbabilisticSpikeNeuron compatible with LIFNode interface.
+    This can be used as a drop-in replacement for LIFNode in existing code.
+    """
+    
+    def __init__(self, dt=1e-3, C=1.0, g_L=0.1, E_L=-70.0, V_reset=-80.0, V_rest=-70.0, 
+                 beta=0.1, V_offset=0.0, tau_ref=2.0):
+        """
+        Initialize the ProbabilisticLIFActivation.
+        
+        Args:
+            dt (float): Simulation timestep (default: 1e-3)
+            C (float): Membrane capacitance (default: 1.0)
+            g_L (float): Leak conductance (default: 0.1)
+            E_L (float): Leak reversal potential (default: -70.0)
+            V_reset (float): Reset voltage after spike (default: -80.0)
+            V_rest (float): Initial voltage or resting voltage (default: -70.0)
+            beta (float): Steepness parameter for tanh activation (default: 0.1)
+            V_offset (float): Voltage offset for tanh activation (default: 0.0)
+            tau_ref (float): Refractory period (default: 2.0)
+        """
+        super(ProbabilisticLIFActivation, self).__init__()
+        self.neuron = ProbabilisticSpikeNeuron(dt, C, g_L, E_L, V_reset, V_rest, beta, V_offset, tau_ref)
+        
+    def forward(self, x):
+        """
+        Forward pass compatible with LIFNode interface.
+        
+        Args:
+            x (torch.Tensor): Input tensor (treated as current)
+            
+        Returns:
+            torch.Tensor: Output spikes with same shape as input
+        """
+        # Handle batch dimensions
+        original_shape = x.shape
+        x_flat = x.flatten()
+        
+        # Process each element
+        output = torch.zeros_like(x_flat)
+        for i in range(x_flat.size(0)):
+            spike, _ = self.neuron(x_flat[i])
+            output[i] = spike
+        
+        # Restore original shape
+        return output.reshape(original_shape)
+    
+    def reset(self):
+        """Reset the neuron state."""
+        self.neuron.reset()
