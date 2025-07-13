@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from ..sblock.base_block import ResnetBlockSnn, AttnBlockSnn, Downsample
-from braincog.base.node import LIFNode
+from ..sblock.probabilistic_neuron import ProbabilisticLIFActivation
 
 
 def nonlinearity_snn(x, nonliner_func):  # swish
@@ -75,7 +75,7 @@ class EncoderSnn(nn.Module):
                                         stride=1,
                                         padding=1)
 
-        self.lif1 = LIFNode()
+        self.lif1 = ProbabilisticLIFActivation()
 
     def forward(self, x_t):
         h_t = []

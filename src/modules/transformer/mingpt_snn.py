@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from braincog.base.node import LIFNode
+from src.modules.sblock.probabilistic_neuron import ProbabilisticLIFActivation
 import math
 import logging
 from torch.nn import functional as F
@@ -35,9 +35,9 @@ class CausalSelfAttentionSnn(nn.Module):
         super().__init__()
         assert config.n_embd % config.n_head == 0
         # key, query, value projections for all heads
-        self.k_lif = LIFNode()
-        self.q_lif = LIFNode()
-        self.v_lif = LIFNode()
+        self.k_lif = ProbabilisticLIFActivation()
+        self.q_lif = ProbabilisticLIFActivation()
+        self.v_lif = ProbabilisticLIFActivation()
         self.key = nn.Sequential(nn.Linear(config.n_embd, config.n_embd),
                                  self.k_lif)
         self.query = nn.Sequential(nn.Linear(config.n_embd, config.n_embd),
@@ -104,7 +104,7 @@ class BlockSnn(nn.Module):
         self.attn = CausalSelfAttentionSnn(config)
         self.mlp = nn.Sequential(
             nn.Linear(config.n_embd, 4 * config.n_embd),
-            LIFNode(),  # replace GELU with LIF
+            ProbabilisticLIFActivation(),  # replace GELU with LIF
             nn.Linear(4 * config.n_embd, config.n_embd),
             nn.Dropout(config.resid_pdrop),
         )
