@@ -69,7 +69,7 @@ lightning:
     # multigpus settings
     accelerator: 'gpu'
     strategy: 'ddp_find_unused_parameters_true'
-    devices: [ 0,1 ]
+    devices: [ 0]
 
     # precision, options: 32-true, 16-mixed etc.
     precision: "32-true"

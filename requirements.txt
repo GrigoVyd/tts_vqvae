@@ -1,7 +1,6 @@
-# Core PyTorch ecosystem
-torch>=1.12.0
-torchvision>=0.13.0
+# Core 
 pytorch-lightning>=1.7.0
+spikingjelly
 
 # Numerical computing and array operations
 numpy>=1.21.0
@@ -9,6 +8,7 @@ einops>=0.6.0
 
 # Configuration management
 omegaconf>=2.2.0
+protobuf==3.20.3
 
 # Visualization and image processing
 matplotlib>=3.5.0
