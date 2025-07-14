@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from .probabilistic_neuron import ProbabilisticLIFActivation
+from .neuron_factory import create_lif_neuron_global
 
 
 def nonlinearity_snn(x, nonliner_func):
@@ -50,9 +50,9 @@ class ResnetBlockSnn(nn.Module):
                                                     kernel_size=1,
                                                     stride=1,
                                                     padding=0)
-        self.lif1 = ProbabilisticLIFActivation()
-        self.lif2 = ProbabilisticLIFActivation()
-        self.lif3 = ProbabilisticLIFActivation()
+        self.lif1 = create_lif_neuron_global()
+        self.lif2 = create_lif_neuron_global()
+        self.lif3 = create_lif_neuron_global()
 
     def forward(self, x, temb):
         h = x
@@ -103,8 +103,8 @@ class AttnBlockSnn(nn.Module):
                                         kernel_size=1,
                                         stride=1,
                                         padding=0)
-        self.q_lif = ProbabilisticLIFActivation()
-        self.k_lif = ProbabilisticLIFActivation()
+        self.q_lif = create_lif_neuron_global()
+        self.k_lif = create_lif_neuron_global()
 
     def forward(self, x):
         h_ = x
